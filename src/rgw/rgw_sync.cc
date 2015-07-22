@@ -333,7 +333,18 @@ int RGWCloneMetaLogOp::state_init(bool *need_wait)
                                   { marker_key, marker.c_str() },
                                   { NULL, NULL } };
 
-  http_op = new RGWRESTReadResource(conn, "/admin/log", pairs, NULL, http_manager);
+  rgw_http_param_pair *p = pairs;
+#if 0
+#warning remove me
+rgw_http_param_pair pairs2[] = { { "type", "metadataz" },
+                                 { "id", buf },
+                                 { "max-entries", max_entries_buf },
+                                 { marker_key, marker.c_str() },
+                                 { NULL, NULL } };
+if (shard_id == 12) p = pairs2;
+#endif
+
+  http_op = new RGWRESTReadResource(conn, "/admin/log", p, NULL, http_manager);
 
   http_op->set_user_info((void *)this);
 
